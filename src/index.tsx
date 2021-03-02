@@ -1,17 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ApplicationTest from "./applicationTest";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+const app = new ApplicationTest(canvas);
+app.update(0, 0)
+app.render();
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const startButton = document.getElementById("start") as HTMLButtonElement;
+
+startButton.addEventListener('click', () => {
+  app.start();
+})
+
+const stopButton = document.getElementById("stop") as HTMLButtonElement;
+
+stopButton.addEventListener('click', () => {
+  app.stop();
+})
+
+

@@ -37,8 +37,12 @@ export enum ButtonType {
 class Vec2 {
   x!: number;
   y!: number;
-  static create(x: number, y: number): Vec2{
-
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+  static create(x: number, y: number): Vec2 {
+    return new Vec2(x, y);
   }
 }
 
@@ -158,50 +162,50 @@ export class Application implements EventListenerObject {
     switch(event.type) {
       case 'mousedown': 
         this._isMouseDown = true;
-        this.dispathMouseDown(this._toCanvasMouseEvent(event));
+        this.dispatchMouseDown(this._toCanvasMouseEvent(event));
         break;
       case 'mouseup':
         this._isMouseDown = false;
-        this.dispathMouseUp(this._toCanvasMouseEvent(event));
+        this.dispatchMouseUp(this._toCanvasMouseEvent(event));
         break;
       case 'mousemove':
         if (this.isSupportMouseEvent) {
           this.dispatchMouseMove(this._toCanvasMouseEvent(event));
         }
         if (this._isMouseDown) {
-          this.dispathMouseDrag(this._toCanvasMouseEvent(event));
+          this.dispatchMouseDrag(this._toCanvasMouseEvent(event));
         }
         break;
       case 'keypress':
-        this.dispathKeyPress(this._toCanvasKeybordEvent(event));
+        this.dispatchKeyPress(this._toCanvasKeybordEvent(event));
         break;
       case 'keydown':
-        this.dispathKeyDown(this._toCanvasKeybordEvent(event));
+        this.dispatchKeyDown(this._toCanvasKeybordEvent(event));
         break;
       case 'keyup':
-        this.dispathKeyUp(this._toCanvasKeybordEvent(event));
+        this.dispatchKeyUp(this._toCanvasKeybordEvent(event));
         break;
     }
   }
-  dispathMouseDown(arg0: CanvasMouseEvent) {
+  dispatchMouseDown(arg0: CanvasMouseEvent) {
     throw new Error("Method not implemented.");
   }
-  dispathMouseUp(arg0: CanvasMouseEvent) {
+  dispatchMouseUp(arg0: CanvasMouseEvent) {
     throw new Error("Method not implemented.");
   }
   dispatchMouseMove(arg0: CanvasMouseEvent) {
     throw new Error("Method not implemented.");
   }
-  dispathMouseDrag(arg0: CanvasMouseEvent) {
+  dispatchMouseDrag(arg0: CanvasMouseEvent) {
     throw new Error("Method not implemented.");
   }
-  dispathKeyPress(arg0: CanvasKeybordEvent) {
+  dispatchKeyPress(arg0: CanvasKeybordEvent) {
     throw new Error("Method not implemented.");
   }
-  dispathKeyDown(arg0: CanvasKeybordEvent) {
+  dispatchKeyDown(arg0: CanvasKeybordEvent) {
     throw new Error("Method not implemented.");
   }
-  dispathKeyUp(arg0: CanvasKeybordEvent) {
+  dispatchKeyUp(arg0: CanvasKeybordEvent) {
     throw new Error("Method not implemented.");
   }
 
@@ -215,8 +219,30 @@ export class Application implements EventListenerObject {
       console.log('boundingReact: ', rect);
       console.log('clientX: ', event.clientX, 'clientY: ', event.clientY);
     }
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    let borderLeftWidth = 0;
+    let borderTopWidth = 0;
+    let paddingLeft = 0;
+    let paddingTop = 0;
+    if (event.target) {
+      const decl = getComputedStyle(event.target as HTMLElement);
+      if (decl.borderLeftWidth) {
+        borderLeftWidth = parseFloat(decl.borderLeftWidth)
+      }
+
+      if (decl.borderTopWidth) {
+        borderTopWidth = parseFloat(decl.borderTopWidth);
+      }
+
+      if (decl.paddingTop) {
+        paddingTop = parseFloat(decl.paddingTop);
+      }
+
+      if (decl.paddingLeft) {
+        paddingLeft = parseFloat(decl.paddingLeft);
+      }
+    }
+    const x = event.clientX - rect.left - borderLeftWidth - paddingLeft;
+    const y = event.clientY - rect.top - borderTopWidth - paddingTop;
     return Vec2.create(x, y);
   }
 
